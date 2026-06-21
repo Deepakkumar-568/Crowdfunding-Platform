@@ -24,7 +24,7 @@ export class Landing implements OnInit {
 
   faqItems = signal([
     {
-      q: 'How does crowdfunding work on Antigravity?',
+      q: 'How does crowdfunding work on Crowdfunding Platform?',
       a: 'Founders build their startup profiles and launch vetted seed rounds. Approved campaigns accept capital from eligible retail and accredited investors.',
       open: false
     },

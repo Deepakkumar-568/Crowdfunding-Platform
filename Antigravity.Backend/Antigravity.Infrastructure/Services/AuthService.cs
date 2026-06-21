@@ -61,7 +61,7 @@ public class AuthService : IAuthService
         var welcomeNotif = new Notification
         {
             UserId = newUser.Id,
-            Message = $"Welcome to Antigravity, {newUser.Username}! Your account as an {newUser.Role} is successfully created.",
+            Message = $"Welcome to Crowdfunding Platform, {newUser.Username}! Your account as an {newUser.Role} is successfully created.",
             CreatedAt = DateTime.UtcNow
         };
         await _unitOfWork.Notifications.AddAsync(welcomeNotif);

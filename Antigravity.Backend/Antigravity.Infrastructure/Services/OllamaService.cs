@@ -32,7 +32,7 @@ public class OllamaService : IOllamaService
                      $"Task: Enhance this description to make it highly premium, professional, and exciting for institutional and retail investors. Keep it under 250 words, using clean, compelling language.";
 
         return await GenerateTextAsync(prompt, () => 
-            $"Antigravity-enhanced overview of {name}: Re-engineered from the ground up, {name} delivers state-of-the-art solutions addressing key gaps in the market. With our unique value proposition: '{tagline}', we scale user acquisition and build long-term value. Our target market represents a multi-billion dollar opportunity, backed by a strong technology framework designed to capture double-digit market share within the next 24 months.");
+            $"Crowdfunding Platform-enhanced overview of {name}: Re-engineered from the ground up, {name} delivers state-of-the-art solutions addressing key gaps in the market. With our unique value proposition: '{tagline}', we scale user acquisition and build long-term value. Our target market represents a multi-billion dollar opportunity, backed by a strong technology framework designed to capture double-digit market share within the next 24 months.");
     }
 
     public async Task<string> ImprovePitchAsync(string name, string pitch)

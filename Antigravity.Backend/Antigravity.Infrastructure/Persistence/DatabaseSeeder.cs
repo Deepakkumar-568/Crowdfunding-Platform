@@ -21,7 +21,7 @@ public static class DatabaseSeeder
             var admin = new User
             {
                 Username = "admin",
-                Email = "admin@antigravity.com",
+                Email = "admin@crowdfunding.com",
                 PasswordHash = HashPassword("Password123"),
                 Role = Role.Admin,
                 CreatedAt = DateTime.UtcNow
@@ -30,7 +30,7 @@ public static class DatabaseSeeder
             var founder = new User
             {
                 Username = "founder",
-                Email = "founder@antigravity.com",
+                Email = "founder@crowdfunding.com",
                 PasswordHash = HashPassword("Password123"),
                 Role = Role.Founder,
                 CreatedAt = DateTime.UtcNow
@@ -39,7 +39,7 @@ public static class DatabaseSeeder
             var investor = new User
             {
                 Username = "investor",
-                Email = "investor@antigravity.com",
+                Email = "investor@crowdfunding.com",
                 PasswordHash = HashPassword("Password123"),
                 Role = Role.Investor,
                 CreatedAt = DateTime.UtcNow
@@ -160,7 +160,7 @@ public static class DatabaseSeeder
             await context.Notifications.AddAsync(new Notification
             {
                 UserId = founder.Id,
-                Message = $"Welcome to Antigravity, founder! You have successfully submitted 'Quantum Fusion' and 'ZeroGravity Logistics'.",
+                Message = $"Welcome to Crowdfunding Platform, founder! You have successfully submitted 'Quantum Fusion' and 'ZeroGravity Logistics'.",
                 CreatedAt = DateTime.UtcNow.AddDays(-10)
             });
 

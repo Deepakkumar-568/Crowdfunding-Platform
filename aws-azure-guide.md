@@ -1,6 +1,6 @@
-# Antigravity Platform - AWS & Azure Deployment Guide
+# Crowdfunding Platform - AWS & Azure Deployment Guide
 
-This guide outlines the production-ready infrastructure deployment strategies for the Antigravity platform on both Amazon Web Services (AWS) and Microsoft Azure.
+This guide outlines the production-ready infrastructure deployment strategies for the Crowdfunding Platform on both Amazon Web Services (AWS) and Microsoft Azure.
 
 ---
 
@@ -30,13 +30,13 @@ This strategy utilizes serverless container hosting (AWS Fargate) to scale the A
 
 ### Step 2: Storage & CDN (Amazon S3 & CloudFront)
 1. Build the Angular app locally: `npm run build`.
-2. Upload the contents of `dist/antigravity/browser/` to an **Amazon S3** bucket configured for static web hosting.
+2. Upload the contents of `dist/Antigravity.Frontend/` to an **Amazon S3** bucket configured for static web hosting.
 3. Configure an **Amazon CloudFront** distribution pointing to the S3 bucket to ensure low-latency HTTPS access with custom SSL certificates (AWS Certificate Manager).
 
 ### Step 3: Container Hosting (AWS ECS Fargate)
 1. Push the backend Docker image to **AWS ECR** (Elastic Container Registry).
 2. Create an **ECS Cluster** using the Fargate (Serverless) launch type.
-3. Define a **Task Definition** for the `antigravity-backend` container:
+3. Define a **Task Definition** for the `crowdfunding-backend` container:
    - Target port: `8080`.
    - CPU/Memory allocation: 0.5 vCPU / 1GB RAM (standard starting scale).
    - Inject environment variables (`ConnectionStrings__DefaultConnection`, `Jwt__Secret`, `Ollama__BaseUrl`).
@@ -51,18 +51,18 @@ This strategy deploys containerized applications directly using Azure App Servic
 ### Step 1: Database Setup (Azure Database for MySQL Flexible Server)
 1. Deploy an **Azure Database for MySQL Flexible Server**.
 2. Configure networking to restrict access to the database using Virtual Network (VNet) Integration, allowing connections only from the backend app subnets.
-3. Create database `antigravity_db`.
+3. Create database `crowdfunding_db`.
 
 ### Step 2: Container Registry & Web App (ACR & App Services)
 1. Create an **Azure Container Registry (ACR)** instance.
 2. Build and push backend and frontend images to ACR:
    ```bash
-   az acr build --registry antigravityregistry --image antigravity-backend:latest ./Antigravity.Backend
-   az acr build --registry antigravityregistry --image antigravity-frontend:latest ./Antigravity.Frontend
+   az acr build --registry crowdfundingregistry --image crowdfunding-backend:latest ./Antigravity.Backend
+   az acr build --registry crowdfundingregistry --image crowdfunding-frontend:latest ./Antigravity.Frontend
    ```
 3. Deploy two **Azure Web App for Containers** resources:
-   - `antigravity-api`: Serves the backend image from ACR. Configure App Settings to bind Connection Strings and JWT Secrets.
-   - `antigravity-web`: Serves the frontend Nginx image from ACR.
+   - `crowdfunding-api`: Serves the backend image from ACR. Configure App Settings to bind Connection Strings and JWT Secrets.
+   - `crowdfunding-web`: Serves the frontend Nginx image from ACR.
 4. Set up **VNet Integration** on the backend App Service to securely access the MySQL database server.
 
 ---
@@ -72,7 +72,7 @@ This strategy deploys containerized applications directly using Azure App Servic
 Automate builds and deployments to AWS using the following workflow template:
 
 ```yaml
-name: Deploy Antigravity Backend to AWS ECR/ECS
+name: Deploy Crowdfunding Backend to AWS ECR/ECS
 
 on:
   push:
@@ -99,7 +99,7 @@ jobs:
     - name: Build, tag, and push image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: antigravity-backend
+        ECR_REPOSITORY: crowdfunding-backend
         IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./Antigravity.Backend

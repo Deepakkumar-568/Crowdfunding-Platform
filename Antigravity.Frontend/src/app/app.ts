@@ -9,7 +9,7 @@ import { AuthService } from './core/services/auth.service';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('Antigravity');
+  protected readonly title = signal('Crowdfunding Platform');
   authService = inject(AuthService);
   isDarkTheme = signal(false);
 

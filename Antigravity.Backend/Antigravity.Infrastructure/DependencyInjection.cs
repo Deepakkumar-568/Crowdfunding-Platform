@@ -14,7 +14,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection") 
-            ?? "Server=localhost;Database=antigravity_db;User=root;Password=;";
+            ?? "Server=localhost;Database=crowdfunding_db;User=root;Password=;";
 
         // Configure EF Core DbContext
         services.AddDbContext<ApplicationDbContext>(options =>

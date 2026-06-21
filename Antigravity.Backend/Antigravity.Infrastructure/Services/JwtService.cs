@@ -20,9 +20,9 @@ public class JwtService : IJwtService
 
     public string GenerateToken(User user)
     {
-        var secret = _configuration["Jwt:Secret"] ?? "AntigravitySuperSecretKeyForJWTSignaturesPlaceholder2026";
-        var issuer = _configuration["Jwt:Issuer"] ?? "Antigravity";
-        var audience = _configuration["Jwt:Audience"] ?? "AntigravityUsers";
+        var secret = _configuration["Jwt:Secret"] ?? "CrowdfundingSuperSecretKeyForJWTSignaturesPlaceholder2026";
+        var issuer = _configuration["Jwt:Issuer"] ?? "Crowdfunding";
+        var audience = _configuration["Jwt:Audience"] ?? "CrowdfundingUsers";
         var expiryMinutes = double.TryParse(_configuration["Jwt:ExpiryMinutes"], out var minutes) ? minutes : 120;
 
         var tokenHandler = new JwtSecurityTokenHandler();

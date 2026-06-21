@@ -45,10 +45,10 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "Antigravity",
-        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "AntigravityUsers",
+        ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "Crowdfunding",
+        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "CrowdfundingUsers",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            builder.Configuration["Jwt:Secret"] ?? "AntigravitySuperSecretKeyForJWTSignaturesPlaceholder2026")),
+            builder.Configuration["Jwt:Secret"] ?? "CrowdfundingSuperSecretKeyForJWTSignaturesPlaceholder2026")),
         ClockSkew = TimeSpan.Zero
     };
 });
@@ -66,7 +66,16 @@ builder.Services.AddScoped<IInvestmentService, InvestmentService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Info.Title = "Crowdfunding Platform API";
+        document.Info.Version = "v1";
+        document.Info.Description = "Crowdfunding Platform Backend API";
+        return Task.CompletedTask;
+    });
+});
 
 var app = builder.Build();
 
