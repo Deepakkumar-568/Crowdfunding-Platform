@@ -1,0 +1,218 @@
+@if (startup(); as s) {
+  <div class="container page-spacing">
+    <!-- Header Hero Banner -->
+    <header class="startup-banner glass-panel p-6 mb-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <img [src]="s.logoUrl || 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?auto=format&fit=crop&w=100&h=100&q=80'" [alt]="s.name" class="startup-logo" />
+          <div>
+            <div class="flex items-center gap-2">
+              <h1>{{ s.name }}</h1>
+              <span class="badge badge-accent">Health Index: {{ s.healthScore }}</span>
+            </div>
+            <p class="tagline mt-2">{{ s.tagline }}</p>
+            <p class="meta-info mt-2 text-muted">
+              <span>Category: <strong>{{ s.category }}</strong></span> | 
+              <span>Industry: <strong>{{ s.industry }}</strong></span> | 
+              <span>Founder: <strong>{{ s.founderName }}</strong></span>
+            </p>
+          </div>
+        </div>
+        
+        <div class="flex gap-3">
+          @if (authService.isLoggedIn() && authService.userRole() === 'Investor') {
+            <button class="btn btn-outline" (click)="toggleSave()">
+              <span class="material-icons">{{ isSaved() ? 'bookmark' : 'bookmark_border' }}</span>
+              {{ isSaved() ? 'Saved' : 'Save Startup' }}
+            </button>
+          }
+          <a routerLink="/startups" class="btn btn-outline">Back to Listings</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Details Split -->
+    <div class="details-layout mt-4">
+      <!-- Left side: pitch, AI, tabs -->
+      <div class="details-main flex flex-col gap-4">
+        <!-- AI Generated Summary Panel -->
+        <div class="glass-panel ai-summary-panel p-6">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-icons ai-icon">psychology</span>
+            <h4 class="font-display">AI Generated Summary (Ollama Llama 3)</h4>
+          </div>
+          <div class="ai-content">
+            @if (generatingSummary()) {
+              <div class="ai-loading">
+                <span class="material-icons rotate">sync</span>
+                <p>Analyzing company deck, financials, and team profiles...</p>
+              </div>
+            } @else {
+              <p class="ai-text">{{ aiSummary() }}</p>
+            }
+          </div>
+        </div>
+
+        <!-- Detail Tabs Container -->
+        <div class="card tabs-card">
+          <div class="tabs-nav flex">
+            <button class="tab-btn" [class.active]="activeTab() === 'pitch'" (click)="switchTab('pitch')">Pitch Deck</button>
+            <button class="tab-btn" [class.active]="activeTab() === 'model'" (click)="switchTab('model')">Business Model</button>
+            <button class="tab-btn" [class.active]="activeTab() === 'financials'" (click)="switchTab('financials')">Financials</button>
+            <button class="tab-btn" [class.active]="activeTab() === 'team'" (click)="switchTab('team')">Team ({{ s.teamMembers.length }})</button>
+          </div>
+
+          <div class="tabs-content mt-4">
+            @if (activeTab() === 'pitch') {
+              <div class="tab-pane">
+                <h3>Pitch Presentation</h3>
+                <p class="mt-4 text-pre">{{ s.description }}</p>
+                
+                @if (s.pitchDeckUrl) {
+                  <div class="doc-link-card mt-4 p-6 glass-panel flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span class="material-icons doc-icon">picture_as_pdf</span>
+                      <div>
+                        <strong>Pitch Deck Document</strong>
+                        <p class="text-muted">PDF file detailing traction parameters</p>
+                      </div>
+                    </div>
+                    <a [href]="s.pitchDeckUrl" target="_blank" class="btn btn-outline btn-sm">Download Deck</a>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (activeTab() === 'model') {
+              <div class="tab-pane">
+                <h3>Business Model & Revenue Streams</h3>
+                <p class="mt-4 text-pre">{{ s.businessModel }}</p>
+              </div>
+            }
+
+            @if (activeTab() === 'financials') {
+              <div class="tab-pane">
+                <h3>Financial Strategy & Growth Metrics</h3>
+                <p class="mt-4 text-pre">{{ s.financialOverview }}</p>
+              </div>
+            }
+
+            @if (activeTab() === 'team') {
+              <div class="tab-pane">
+                <h3>Founding Roster</h3>
+                <div class="grid grid-2 mt-4">
+                  @for (member of s.teamMembers; track member.name) {
+                    <div class="team-member-card glass-panel p-6 flex gap-4">
+                      <img [src]="member.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&h=80&q=80'" [alt]="member.name" class="member-avatar" />
+                      <div>
+                        <h4>{{ member.name }}</h4>
+                        <span class="badge badge-neutral mt-2">{{ member.role }}</span>
+                        <p class="mt-4 text-muted">{{ member.bio }}</p>
+                      </div>
+                    </div>
+                  } @empty {
+                    <p class="text-muted">No team members registered yet.</p>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: campaign details, investment -->
+      <div class="details-sidebar flex flex-col gap-4">
+        @if (campaign(); as c) {
+          <div class="card campaign-stats-card">
+            <h3 class="font-display">Investment Round</h3>
+            <span class="badge badge-primary mt-2">{{ c.status }}</span>
+            
+            <div class="stats-grid mt-4">
+              <div class="stat-box">
+                <span class="label">Total Raised</span>
+                <span class="value">{{ c.currentFunding | currency:'USD':'symbol':'1.0-0' }}</span>
+              </div>
+              <div class="stat-box">
+                <span class="label">Funding Target</span>
+                <span class="value">{{ c.fundingGoal | currency:'USD':'symbol':'1.0-0' }}</span>
+              </div>
+            </div>
+
+            <div class="progress-section mt-4">
+              <div class="flex justify-between mb-4">
+                <span class="pct font-display">{{ c.progressPercentage }}% Complete</span>
+                <span class="days">{{ c.daysLeft }} Days Left</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" [style.width.%]="c.progressPercentage"></div>
+              </div>
+              <p class="mt-4 text-muted text-center">{{ c.investorCount }} community backers supporting this round</p>
+            </div>
+          </div>
+
+          <!-- Investment Action Card -->
+          <div class="card investment-action-card">
+            <h4 class="font-display">Make an Investment</h4>
+            
+            @if (investSuccess()) {
+              <div class="success-message p-6 text-center mt-4">
+                <span class="material-icons success-icon">verified_user</span>
+                <p class="mt-4">Investment Registered!</p>
+                <p class="text-muted">Your capital commitment is processing. Check your Investor Dashboard portfolio.</p>
+              </div>
+            } @else {
+              @if (authService.isLoggedIn()) {
+                @if (authService.userRole() === 'Investor') {
+                  @if (c.status === 'Active') {
+                    <form (submit)="submitInvestment($event)" class="flex flex-col gap-4 mt-4">
+                      @if (investError()) {
+                        <div class="error-panel p-6 mb-4">
+                          <p>{{ investError() }}</p>
+                        </div>
+                      }
+                      
+                      <div class="form-group">
+                        <label for="amount">Investment Amount ($)</label>
+                        <input type="number" id="amount" name="amount" [(ngModel)]="investAmount" required min="100" placeholder="e.g. 5000" class="form-control" />
+                        <span class="help-text">Minimum investment: $100</span>
+                      </div>
+                      
+                      <button type="submit" class="btn btn-accent btn-full">Commit Capital</button>
+                    </form>
+                  } @else {
+                    <div class="not-investable mt-4 p-6 glass-panel text-center">
+                      <span class="material-icons text-muted">lock</span>
+                      <p class="mt-4">This campaign status is <strong>{{ c.status }}</strong> and is not open for investments right now.</p>
+                    </div>
+                  }
+                } @else {
+                  <div class="not-investable mt-4 p-6 glass-panel text-center">
+                    <span class="material-icons text-muted font-30">info</span>
+                    <p class="mt-4">You are logged in as a <strong>{{ authService.userRole() }}</strong>. Only registered Investor profiles can make financial commitments.</p>
+                  </div>
+                }
+              } @else {
+                <div class="login-cta-panel mt-4 p-6 glass-panel text-center flex flex-col gap-4">
+                  <span class="material-icons text-muted">account_balance</span>
+                  <p>Log in or sign up as an Investor to make seed contributions to this startup round.</p>
+                  <a routerLink="/auth/login" [queryParams]="{ returnUrl: '/startups/' + s.id }" class="btn btn-primary btn-full">Log In to Invest</a>
+                </div>
+              }
+            }
+          </div>
+        } @else {
+          <div class="card no-campaign-card text-center">
+            <span class="material-icons text-muted">no_meeting_room</span>
+            <h4 class="mt-4">No Campaigns Active</h4>
+            <p class="text-muted mt-4">This startup has not launched a public funding campaign round yet.</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="container page-spacing text-center">
+    <span class="material-icons rotate size-48">sync</span>
+    <p class="mt-4">Loading startup database profiles...</p>
+  </div>
+}

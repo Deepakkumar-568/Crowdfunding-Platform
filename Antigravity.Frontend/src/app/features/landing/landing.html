@@ -1,0 +1,192 @@
+<!-- Hero Section -->
+<section class="hero-section text-center">
+  <div class="container flex flex-col items-center">
+    <span class="badge badge-primary mb-4">Empowering Startups. Connecting Investors.</span>
+    <h1 class="hero-title">A Premium Hub for Startup Fundraising</h1>
+    <p class="hero-subtitle mt-4">Antigravity is a next-generation crowdfunding ecosystem providing retail and accredited investors access to high-potential startups using AI-backed auditing.</p>
+    <div class="hero-actions mt-4 flex gap-4">
+      <a routerLink="/startups" class="btn btn-primary">Browse Campaigns</a>
+      <a routerLink="/auth/register" class="btn btn-outline">Submit Your Startup</a>
+    </div>
+  </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section p-6">
+  <div class="container grid grid-4 text-center">
+    <div class="stat-card glass-panel">
+      <div class="stat-number">{{ stats().totalRaised | currency:'USD':'symbol':'1.0-0' }}</div>
+      <div class="stat-label">Total Capital Raised</div>
+    </div>
+    <div class="stat-card glass-panel">
+      <div class="stat-number">{{ stats().totalInvestors | number }}</div>
+      <div class="stat-label">Platform Investors</div>
+    </div>
+    <div class="stat-card glass-panel">
+      <div class="stat-number">{{ stats().successRate }}%</div>
+      <div class="stat-label">Campaign Success Rate</div>
+    </div>
+    <div class="stat-card glass-panel">
+      <div class="stat-number">{{ stats().activeCampaignsCount }}</div>
+      <div class="stat-label">Active Rounds</div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Campaigns Section -->
+<section class="featured-section container">
+  <h2 class="section-title text-center">Featured Investment Opportunities</h2>
+  <p class="section-subtitle text-center">Vetted high-growth teams currently raising seed capital.</p>
+
+  <div class="grid grid-3 mt-4">
+    @for (campaign of featuredCampaigns(); track campaign.id) {
+      <div class="card campaign-card flex flex-col">
+        <div class="card-image-wrapper">
+          <img [src]="campaign.startupLogoUrl || 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=400&h=250&q=80'" [alt]="campaign.startupName" class="campaign-image" />
+        </div>
+        <div class="campaign-body flex-1 flex flex-col mt-4">
+          <div class="flex items-center justify-between">
+            <span class="badge badge-primary">{{ campaign.status }}</span>
+            <span class="days-left"><span class="material-icons size-16">schedule</span> {{ campaign.daysLeft }} days left</span>
+          </div>
+          <h3 class="campaign-name mt-4">{{ campaign.startupName }}</h3>
+          <p class="campaign-tagline mt-4">{{ campaign.startupTagline }}</p>
+          
+          <div class="campaign-progress mt-4">
+            <div class="flex items-center justify-between mb-4">
+              <span class="progress-raised">Raised <strong>{{ campaign.currentFunding | currency:'USD':'symbol':'1.0-0' }}</strong></span>
+              <span class="progress-pct font-display">{{ campaign.progressPercentage }}%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" [style.width.%]="campaign.progressPercentage"></div>
+            </div>
+            <div class="flex items-center justify-between mt-4 text-muted">
+              <span>Goal: {{ campaign.fundingGoal | currency:'USD':'symbol':'1.0-0' }}</span>
+              <span>{{ campaign.investorCount }} Backers</span>
+            </div>
+          </div>
+          
+          <div class="mt-4 pt-4 border-top">
+            <a [routerLink]="['/startups', campaign.startupId]" class="btn btn-outline btn-full">View Pitch & Financials</a>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="text-center p-6 glass-panel col-span-3">
+        <p>No active investment campaigns available right now. Check back soon!</p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works-section">
+  <div class="container">
+    <h2 class="section-title text-center">How Antigravity Works</h2>
+    <p class="section-subtitle text-center">Seamless onboarding for founders and wealth builders alike.</p>
+    
+    <div class="grid grid-3 mt-4">
+      <div class="step-card text-center">
+        <span class="material-icons step-icon">app_registration</span>
+        <h4>1. Register Your Account</h4>
+        <p>Create a Founder, Investor, or Advisor account with verified credentials.</p>
+      </div>
+      <div class="step-card text-center">
+        <span class="material-icons step-icon">analytics</span>
+        <h4>2. Vetted Audits & AI Scoring</h4>
+        <p>Startups submit pitch documents. Our Llama 3 engine analyzes team profiles and calculates health indexes.</p>
+      </div>
+      <div class="step-card text-center">
+        <span class="material-icons step-icon">payments</span>
+        <h4>3. Allocate & Diversify</h4>
+        <p>Investors fund campaigns instantly. Track milestones and ROI payouts on your portfolio dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits-section container">
+  <div class="grid grid-2 items-center">
+    <div class="benefits-text">
+      <h2>Why Investors Choose Antigravity</h2>
+      <ul class="benefits-list mt-4">
+        <li>
+          <span class="material-icons check-icon">check_circle</span>
+          <div>
+            <strong>Vetted Deals Only</strong>
+            <p>We reject 90% of listing requests, featuring only those with valid traction, audits, and sound business models.</p>
+          </div>
+        </li>
+        <li>
+          <span class="material-icons check-icon">check_circle</span>
+          <div>
+            <strong>AI-Backed Analysis</strong>
+            <p>Receive summaries, performance analysis, and automated recommendation indexing directly in your browser.</p>
+          </div>
+        </li>
+        <li>
+          <span class="material-icons check-icon">check_circle</span>
+          <div>
+            <strong>Transparent Progress Checks</strong>
+            <p>Direct pipeline reports, documents verification, and founder communication tools built in.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="benefits-image-panel text-center">
+      <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&h=350&q=80" alt="Dashboard Analytics Preview" class="benefits-preview-img" />
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section container">
+  <h2 class="section-title text-center">Frequently Asked Questions</h2>
+  <div class="faq-list mt-4">
+    @for (faq of faqItems(); track $index) {
+      <div class="faq-item" [class.open]="faq.open" (click)="toggleFaq($index)">
+        <div class="faq-header">
+          <h5>{{ faq.q }}</h5>
+          <span class="material-icons faq-arrow">{{ faq.open ? 'expand_less' : 'expand_more' }}</span>
+        </div>
+        @if (faq.open) {
+          <div class="faq-body">
+            <p>{{ faq.a }}</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section">
+  <div class="container max-width-600 glass-panel p-6">
+    <h2 class="text-center">Get in Touch</h2>
+    <p class="text-center text-muted mb-4">Have questions about investing or listing your campaign?</p>
+    
+    @if (contactSuccess()) {
+      <div class="success-message p-6 text-center">
+        <span class="material-icons success-icon">task_alt</span>
+        <p class="mt-4">Thank you! Your inquiry was submitted. A representative will email you shortly.</p>
+      </div>
+    } @else {
+      <form (submit)="submitContact($event)" class="flex flex-col gap-4">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" [(ngModel)]="contactName" required class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" [(ngModel)]="contactEmail" required class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="message">Your Message</label>
+          <textarea id="message" name="message" [(ngModel)]="contactMessage" required rows="4" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+      </form>
+    }
+  </div>
+</section>

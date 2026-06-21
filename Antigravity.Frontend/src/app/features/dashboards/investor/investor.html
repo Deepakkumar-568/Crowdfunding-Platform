@@ -1,0 +1,193 @@
+<div class="container page-spacing">
+  <!-- Title Header -->
+  <div class="page-header flex justify-between items-center mb-4">
+    <div>
+      <h1 class="font-display">Investor Dashboard</h1>
+      <p class="text-muted">Analyze your startup portfolios, watchlists, and match interests using AI.</p>
+    </div>
+    
+    <a routerLink="/startups" class="btn btn-primary">
+      <span class="material-icons">search</span> Find Startups
+    </a>
+  </div>
+
+  <!-- Main Dashboard Workspace -->
+  <div class="dashboard-workspace mt-4">
+    <!-- Navigation Sidebar tabs -->
+    <aside class="dashboard-sidebar glass-panel p-6">
+      <nav class="sidebar-nav flex flex-col gap-2">
+        <button class="nav-tab-btn" [class.active]="activeTab() === 'metrics'" (click)="switchTab('metrics')">
+          <span class="material-icons">pie_chart</span> Portfolio Analytics
+        </button>
+        <button class="nav-tab-btn" [class.active]="activeTab() === 'saved'" (click)="switchTab('saved')">
+          <span class="material-icons">bookmarks</span> Saved Watchlist
+        </button>
+        <button class="nav-tab-btn" [class.active]="activeTab() === 'history'" (click)="switchTab('history')">
+          <span class="material-icons">receipt_long</span> Allocation History
+        </button>
+        <button class="nav-tab-btn" [class.active]="activeTab() === 'ai-match'" (click)="switchTab('ai-match')">
+          <span class="material-icons">psychology</span> AI Matchmaker
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Dashboard Modules Area -->
+    <main class="dashboard-main-content">
+      @if (activeTab() === 'metrics') {
+        <!-- Overview metrics -->
+        @if (dashboardData(); as data) {
+          <!-- Cards Grid -->
+          <div class="grid grid-4 mb-4">
+            @for (card of data.cards; track card.title) {
+              <div class="card metric-card">
+                <span class="metric-title">{{ card.title }}</span>
+                <span class="metric-value font-display mt-2">{{ card.value }}</span>
+                <span class="metric-change mt-2" [class.positive]="card.isPositive">{{ card.changeText }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="grid grid-2">
+            <!-- Active Investments -->
+            <div class="card">
+              <h3>Active Allocations</h3>
+              <div class="flex flex-col gap-4 mt-4">
+                @for (i of data.activeInvestments; track i.id) {
+                  <div class="campaign-row p-4 glass-panel flex justify-between items-center">
+                    <div>
+                      <strong>{{ i.campaignName }}</strong>
+                      <p class="text-sm text-muted">Estimated ROI: <strong class="text-accent">{{ i.roiTracked }}%</strong></p>
+                    </div>
+                    <strong class="text-primary">{{ i.amount | currency:'USD':'symbol':'1.0-0' }}</strong>
+                  </div>
+                } @empty {
+                  <div class="p-6 text-center text-muted">
+                    <p>You have no active seed funding allocations.</p>
+                    <a routerLink="/startups" class="btn btn-outline btn-sm mt-4">Browse Active Campaigns</a>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Recent Notifications -->
+            <div class="card">
+              <h3>Security Alerts & Activity</h3>
+              <div class="flex flex-col gap-2 mt-4">
+                @for (n of data.notifications; track n.id) {
+                  <div class="notification-item p-4 glass-panel flex items-start gap-3">
+                    <span class="material-icons notify-bullet">info</span>
+                    <div>
+                      <p class="msg">{{ n.message }}</p>
+                      <span class="time text-xs text-muted">{{ n.createdAt | date:'short' }}</span>
+                    </div>
+                  </div>
+                } @empty {
+                  <p class="text-muted p-6 text-center">No alerts in your inbox.</p>
+                }
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="text-center p-6 glass-panel">
+            <span class="material-icons rotate size-32">sync</span>
+            <p class="mt-4">Compiling portfolio metrics...</p>
+          </div>
+        }
+      }
+
+      @if (activeTab() === 'saved') {
+        <!-- Watchlist Startups -->
+        <div class="card">
+          <h3>Saved Watchlist</h3>
+          <div class="flex flex-col gap-4 mt-4">
+            @for (st of dashboardData()?.savedStartups; track st.id) {
+              <div class="startup-row p-6 glass-panel flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="flex items-center gap-4">
+                  <img [src]="st.logoUrl || 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?auto=format&fit=crop&w=80&h=80&q=80'" [alt]="st.name" class="avatar-sm" />
+                  <div>
+                    <h4>{{ st.name }}</h4>
+                    <p class="text-sm text-muted">{{ st.tagline }}</p>
+                    <p class="text-xs text-muted mt-2">Health Index: <strong>{{ st.healthScore }}</strong> | Industry: <strong>{{ st.industry }}</strong></p>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                  <a [routerLink]="['/startups', st.id]" class="btn btn-outline btn-sm">Pitch Room</a>
+                  <button class="btn btn-outline btn-sm text-danger" (click)="removeSaved($event, st.id)">
+                    <span class="material-icons size-16">delete</span> Remove
+                  </button>
+                </div>
+              </div>
+            } @empty {
+              <div class="p-6 text-center text-muted">
+                <p>Your watchlist is empty.</p>
+                <a routerLink="/startups" class="btn btn-primary mt-4">Find Startups to Save</a>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (activeTab() === 'history') {
+        <!-- Allocation History -->
+        <div class="card">
+          <h3>Complete Allocation History</h3>
+          <div class="flex flex-col gap-4 mt-4">
+            @for (i of dashboardData()?.recentHistory; track i.id) {
+              <div class="startup-row p-6 glass-panel flex justify-between items-center">
+                <div>
+                  <h4>{{ i.campaignName }}</h4>
+                  <p class="text-xs text-muted">Allocated: {{ i.investedAt | date:'medium' }} | ROI Yield: <strong>{{ i.roiTracked }}%</strong></p>
+                </div>
+                <div class="text-right">
+                  <strong class="font-display size-18 text-primary">{{ i.amount | currency:'USD':'symbol':'1.0-0' }}</strong>
+                  <span class="badge badge-accent block mt-2">{{ i.status }}</span>
+                </div>
+              </div>
+            } @empty {
+              <div class="p-6 text-center text-muted">
+                <p>No investment transaction history recorded on this profile.</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (activeTab() === 'ai-match') {
+        <!-- AI Recommendations Matchmaker -->
+        <div class="card">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-icons ai-headline-icon">psychology</span>
+            <h3>Llama 3 Investor Matchmaker</h3>
+          </div>
+          <p class="text-muted mb-4">Input your investment criteria, thesis, or sector interests. Our local LLM service will compile matching startups currently open for seeding.</p>
+
+          <div class="flex flex-col gap-4">
+            <div class="form-group">
+              <label for="interests">My Investment Thesis & Sector Interests</label>
+              <textarea id="interests" [(ngModel)]="investorInterests" rows="4" class="form-control" placeholder="e.g. Biotech solutions, zero carbon transport, machine learning B2B software..."></textarea>
+            </div>
+            
+            <button class="btn btn-primary btn-full" [disabled]="gettingRecommendations() || !investorInterests" (click)="getRecommendations()">
+              @if (gettingRecommendations()) {
+                <span class="material-icons rotate font-16">sync</span> Generating VC Analysis...
+              } @else {
+                Match Startups with AI
+              }
+            </button>
+
+            <div class="ai-pitch-output p-4 glass-panel mt-4 text-pre">
+              @if (aiRecommendations()) {
+                {{ aiRecommendations() }}
+              } @else {
+                <div class="flex flex-col items-center justify-center h-full text-muted p-6">
+                  <span class="material-icons font-48">explore</span>
+                  <p class="mt-4">AI analysis will list matches based on platform database.</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </main>
+  </div>
+</div>

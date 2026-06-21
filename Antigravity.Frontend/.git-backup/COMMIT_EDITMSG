@@ -1,0 +1,50 @@
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Changes to be committed:
+#	new file:   Dockerfile
+#	new file:   nginx.conf
+#	modified:   package-lock.json
+#	modified:   package.json
+#	modified:   src/app/app.config.ts
+#	modified:   src/app/app.html
+#	modified:   src/app/app.routes.ts
+#	modified:   src/app/app.scss
+#	modified:   src/app/app.ts
+#	new file:   src/app/core/guards/auth.guard.ts
+#	new file:   src/app/core/interceptors/jwt.interceptor.ts
+#	new file:   src/app/core/services/ai.service.ts
+#	new file:   src/app/core/services/auth.service.ts
+#	new file:   src/app/core/services/campaign.service.ts
+#	new file:   src/app/core/services/dashboard.service.ts
+#	new file:   src/app/core/services/investment.service.ts
+#	new file:   src/app/core/services/startup.service.ts
+#	new file:   src/app/features/auth/forgot/forgot.html
+#	new file:   src/app/features/auth/forgot/forgot.ts
+#	new file:   src/app/features/auth/login/login.html
+#	new file:   src/app/features/auth/login/login.scss
+#	new file:   src/app/features/auth/login/login.ts
+#	new file:   src/app/features/auth/register/register.html
+#	new file:   src/app/features/auth/register/register.ts
+#	new file:   src/app/features/auth/reset/reset.html
+#	new file:   src/app/features/auth/reset/reset.ts
+#	new file:   src/app/features/dashboards/admin/admin.html
+#	new file:   src/app/features/dashboards/admin/admin.ts
+#	new file:   src/app/features/dashboards/founder/founder.html
+#	new file:   src/app/features/dashboards/founder/founder.scss
+#	new file:   src/app/features/dashboards/founder/founder.ts
+#	new file:   src/app/features/dashboards/investor/investor.html
+#	new file:   src/app/features/dashboards/investor/investor.ts
+#	new file:   src/app/features/landing/landing.html
+#	new file:   src/app/features/landing/landing.scss
+#	new file:   src/app/features/landing/landing.ts
+#	new file:   src/app/features/startups/details/details.html
+#	new file:   src/app/features/startups/details/details.scss
+#	new file:   src/app/features/startups/details/details.ts
+#	new file:   src/app/features/startups/list/list.html
+#	new file:   src/app/features/startups/list/list.scss
+#	new file:   src/app/features/startups/list/list.ts
+#	modified:   src/styles.scss
+#

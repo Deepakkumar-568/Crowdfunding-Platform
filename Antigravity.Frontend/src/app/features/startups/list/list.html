@@ -1,0 +1,108 @@
+<div class="container page-spacing">
+  <div class="page-header text-center">
+    <h1 class="font-display">Startup Campaigns</h1>
+    <p class="text-muted">Invest in vetted seed rounds, support visionaries, and follow live milestones.</p>
+  </div>
+
+  <div class="list-layout mt-4">
+    <!-- Filter Sidebar -->
+    <aside class="sidebar-filters glass-panel p-6">
+      <h3 class="mb-4">Filters</h3>
+      
+      <div class="filter-group">
+        <label for="search">Keyword Search</label>
+        <input type="text" id="search" [(ngModel)]="searchQuery" (input)="applyFilters()" placeholder="e.g. Fusion, Drone..." class="form-control" />
+      </div>
+
+      <div class="filter-group mt-4">
+        <label for="category">Category</label>
+        <select id="category" [(ngModel)]="selectedCategory" (change)="applyFilters()" class="form-control">
+          <option value="">All Categories</option>
+          @for (cat of categories; track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group mt-4">
+        <label for="industry">Industry</label>
+        <select id="industry" [(ngModel)]="selectedIndustry" (change)="applyFilters()" class="form-control">
+          <option value="">All Industries</option>
+          @for (ind of industries; track ind) {
+            <option [value]="ind">{{ ind }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group mt-4">
+        <label>Funding Goal Target</label>
+        <div class="flex gap-2">
+          <input type="number" [(ngModel)]="minGoal" (input)="applyFilters()" placeholder="Min ($)" class="form-control form-sm" />
+          <input type="number" [(ngModel)]="maxGoal" (input)="applyFilters()" placeholder="Max ($)" class="form-control form-sm" />
+        </div>
+      </div>
+
+      <div class="filter-group mt-4">
+        <label for="sort">Sort By</label>
+        <select id="sort" [(ngModel)]="selectedSort" (change)="applyFilters()" class="form-control">
+          <option value="newest">Newest Rounds</option>
+          <option value="fundingraised">Funding Raised</option>
+          <option value="popularity">Popularity (Backers)</option>
+          <option value="progress">Goal Progress (%)</option>
+        </select>
+      </div>
+
+      <button (click)="resetFilters()" class="btn btn-outline btn-full mt-4">Clear All Filters</button>
+    </aside>
+
+    <!-- Results Area -->
+    <main class="results-area">
+      <div class="results-meta flex items-center justify-between mb-4">
+        <span class="text-muted">Showing <strong>{{ filteredCampaigns().length }}</strong> of {{ campaigns().length }} campaigns</span>
+      </div>
+
+      <div class="grid grid-2">
+        @for (campaign of filteredCampaigns(); track campaign.id) {
+          <div class="card campaign-card flex flex-col">
+            <div class="card-image-wrapper">
+              <img [src]="campaign.startupLogoUrl || 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=400&h=250&q=80'" [alt]="campaign.startupName" class="campaign-image" />
+            </div>
+            <div class="campaign-body flex-1 flex flex-col mt-4">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-primary">{{ campaign.status }}</span>
+                <span class="days-left"><span class="material-icons size-16">schedule</span> {{ campaign.daysLeft }} days left</span>
+              </div>
+              <h3 class="campaign-name mt-4">{{ campaign.startupName }}</h3>
+              <p class="campaign-tagline mt-4">{{ campaign.startupTagline }}</p>
+              
+              <div class="campaign-progress mt-4">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="progress-raised">Raised <strong>{{ campaign.currentFunding | currency:'USD':'symbol':'1.0-0' }}</strong></span>
+                  <span class="progress-pct font-display">{{ campaign.progressPercentage }}%</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" [style.width.%]="campaign.progressPercentage"></div>
+                </div>
+                <div class="flex items-center justify-between mt-4 text-muted">
+                  <span>Goal: {{ campaign.fundingGoal | currency:'USD':'symbol':'1.0-0' }}</span>
+                  <span>{{ campaign.investorCount }} Backers</span>
+                </div>
+              </div>
+              
+              <div class="mt-4 pt-4 border-top">
+                <a [routerLink]="['/startups', campaign.startupId]" class="btn btn-outline btn-full">View Pitch & Details</a>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="text-center p-6 glass-panel col-span-2">
+            <span class="material-icons info-icon">search_off</span>
+            <h4 class="mt-4">No Startup Campaigns Match Your Filters</h4>
+            <p class="text-muted mt-4">Try clearing your filters or widening your search bounds.</p>
+            <button (click)="resetFilters()" class="btn btn-primary mt-4">Reset Filters</button>
+          </div>
+        }
+      </div>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,90 @@
+.auth-wrapper {
+  min-height: calc(100vh - 250px);
+  padding: 64px 24px;
+  background: radial-gradient(circle at center, rgba(37, 99, 235, 0.04), transparent);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  
+  .auth-icon {
+    font-size: 2.8rem;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+}
+
+.forgot-link {
+  color: var(--text-muted);
+  &:hover {
+    color: var(--primary);
+  }
+}
+
+.error-panel {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-sm);
+  color: #EF4444;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.rotate {
+  animation: spin 2s linear infinite;
+}
+
+.font-16 {
+  font-size: 16px;
+}
+
+.role-radio-card {
+  border: 1px solid var(--card-border);
+  background-color: var(--card-bg);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  user-select: none;
+  text-align: center;
+  
+  .role-icon {
+    font-size: 1.8rem;
+    color: var(--text-muted);
+  }
+  
+  .role-title {
+    font-weight: 600;
+    margin-top: 8px;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+  }
+  
+  .role-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 4px;
+  }
+  
+  &:hover {
+    border-color: var(--primary);
+  }
+  
+  &.selected {
+    border-color: var(--primary);
+    background-color: rgba(37, 99, 235, 0.05);
+    
+    .role-icon {
+      color: var(--primary);
+    }
+  }
+}
+
+.hidden-radio {
+  display: none;
+}

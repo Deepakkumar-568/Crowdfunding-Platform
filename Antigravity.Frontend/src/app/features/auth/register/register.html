@@ -1,0 +1,64 @@
+<div class="auth-wrapper flex items-center justify-center">
+  <div class="card auth-card glass-panel p-6">
+    <div class="text-center mb-4">
+      <span class="material-icons auth-icon">app_registration</span>
+      <h2 class="font-display">Create Account</h2>
+      <p class="text-muted">Join Antigravity to support startups or raise capital</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="error-panel p-6 mb-4">
+        <p>{{ errorMessage() }}</p>
+      </div>
+    }
+
+    <form (submit)="onSubmit($event)" class="flex flex-col gap-4">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" [(ngModel)]="username" required autocomplete="username" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" [(ngModel)]="email" required autocomplete="email" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" required autocomplete="new-password" class="form-control" />
+      </div>
+
+      <!-- Role Selection Premium Custom Radios -->
+      <div class="form-group">
+        <label>Account Role</label>
+        <div class="role-selector-grid flex gap-3 mt-2">
+          <label class="role-radio-card flex-1 flex flex-col items-center p-6 border rounded cursor-pointer" [class.selected]="role === 'Investor'">
+            <input type="radio" name="role" [(ngModel)]="role" value="Investor" class="hidden-radio" />
+            <span class="material-icons role-icon">trending_up</span>
+            <span class="role-title">Investor</span>
+            <span class="role-desc">Back seed campaigns</span>
+          </label>
+
+          <label class="role-radio-card flex-1 flex flex-col items-center p-6 border rounded cursor-pointer" [class.selected]="role === 'Founder'">
+            <input type="radio" name="role" [(ngModel)]="role" value="Founder" class="hidden-radio" />
+            <span class="material-icons role-icon">rocket_launch</span>
+            <span class="role-title">Founder</span>
+            <span class="role-desc">Raise campaign capital</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loading()" class="btn btn-primary btn-full mt-4">
+        @if (loading()) {
+          <span class="material-icons rotate font-16">sync</span> Registering...
+        } @else {
+          Sign Up
+        }
+      </button>
+    </form>
+
+    <div class="auth-footer text-center mt-4 pt-4 border-top">
+      <p class="text-muted">Already have an account? <a routerLink="/auth/login">Sign In</a></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,323 @@
+<div class="container page-spacing">
+  <!-- Title Header -->
+  <div class="page-header flex justify-between items-center mb-4">
+    <div>
+      <h1 class="font-display">Founder Dashboard</h1>
+      <p class="text-muted">Raise seed capital, track investment milestones, and refine your pitch deck.</p>
+    </div>
+    
+    @if (myStartups().length > 0) {
+      <button class="btn btn-primary" (click)="switchTab('launch')">
+        <span class="material-icons">add_circle</span> Launch New Round
+      </button>
+    } @else {
+      <button class="btn btn-primary" (click)="showCreateStartupForm.set(true)">
+        <span class="material-icons">rocket</span> Register Startup Profile
+      </button>
+    }
+  </div>
+
+  @if (showCreateStartupForm()) {
+    <!-- Create Startup Profile Form -->
+    <div class="card p-6">
+      <div class="flex justify-between items-center mb-4 border-bottom pb-4">
+        <h3>Register Startup Profile</h3>
+        <button class="btn btn-outline btn-sm" (click)="showCreateStartupForm.set(false)">Cancel</button>
+      </div>
+
+      @if (createSuccess()) {
+        <div class="success-message p-6 text-center">
+          <span class="material-icons success-icon">cloud_done</span>
+          <p class="mt-4">Startup profile registered successfully!</p>
+          <p class="text-muted">AI is calculating health parameters. Redirecting...</p>
+        </div>
+      } @else {
+        <form (submit)="submitCreateStartup($event)" class="flex flex-col gap-4">
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label for="sName">Startup Name</label>
+              <input type="text" id="sName" name="sName" [(ngModel)]="startupName" required placeholder="e.g. Acme Space Tech" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label for="sTagline">Elevator Tagline</label>
+              <input type="text" id="sTagline" name="sTagline" [(ngModel)]="startupTagline" required placeholder="e.g. Next generation hydrogen storage systems" class="form-control" />
+            </div>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label for="sIndustry">Industry</label>
+              <select id="sIndustry" name="sIndustry" [(ngModel)]="startupIndustry" class="form-control">
+                <option value="HardTech">HardTech</option>
+                <option value="Logistics">Logistics</option>
+                <option value="Software">Software</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Finance">Finance</option>
+                <option value="Automation">Automation</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sCategory">Category</label>
+              <select id="sCategory" name="sCategory" [(ngModel)]="startupCategory" class="form-control">
+                <option value="Energy">Energy</option>
+                <option value="Aerospace">Aerospace</option>
+                <option value="SaaS">SaaS</option>
+                <option value="Biotech">Biotech</option>
+                <option value="Fintech">Fintech</option>
+                <option value="AI & Robotics">AI & Robotics</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sDesc">Company Overview & Pitch Deck Details</label>
+            <textarea id="sDesc" name="sDesc" [(ngModel)]="startupDesc" required rows="4" placeholder="Detail your startup's core offering and market problem." class="form-control"></textarea>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label for="sModel">Business Model</label>
+              <textarea id="sModel" name="sModel" [(ngModel)]="startupModel" required rows="3" placeholder="How do you make money? e.g. SaaS recurring licensing fees..." class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="sFinancials">Financial Outlook</label>
+              <textarea id="sFinancials" name="sFinancials" [(ngModel)]="startupFinancials" required rows="3" placeholder="Detail ARR targets, burn rates, and profitability projections." class="form-control"></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full mt-4">Submit Startup Profile</button>
+        </form>
+      }
+    </div>
+  } @else {
+    <!-- Main Dashboard Workspace -->
+    <div class="dashboard-workspace mt-4">
+      <!-- Navigation Sidebar tabs -->
+      <aside class="dashboard-sidebar glass-panel p-6">
+        <nav class="sidebar-nav flex flex-col gap-2">
+          <button class="nav-tab-btn" [class.active]="activeTab() === 'metrics'" (click)="switchTab('metrics')">
+            <span class="material-icons">dashboard</span> Dashboard Overview
+          </button>
+          <button class="nav-tab-btn" [class.active]="activeTab() === 'startup'" (click)="switchTab('startup')">
+            <span class="material-icons">business</span> My Startup Profiles
+          </button>
+          @if (myStartups().length > 0) {
+            <button class="nav-tab-btn" [class.active]="activeTab() === 'ai-pitch'" (click)="switchTab('ai-pitch')">
+              <span class="material-icons">psychology</span> AI Pitch Refiner
+            </button>
+            <button class="nav-tab-btn" [class.active]="activeTab() === 'launch'" (click)="switchTab('launch')">
+              <span class="material-icons">rocket_launch</span> Raise Capital
+            </button>
+          }
+        </nav>
+      </aside>
+
+      <!-- Dashboard Modules Area -->
+      <main class="dashboard-main-content">
+        @if (activeTab() === 'metrics') {
+          <!-- Overview metrics -->
+          @if (dashboardData(); as data) {
+            <!-- Cards Grid -->
+            <div class="grid grid-4 mb-4">
+              @for (card of data.cards; track card.title) {
+                <div class="card metric-card">
+                  <span class="metric-title">{{ card.title }}</span>
+                  <span class="metric-value font-display mt-2">{{ card.value }}</span>
+                  <span class="metric-change mt-2" [class.positive]="card.isPositive">{{ card.changeText }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="grid grid-2">
+              <!-- Active Campaigns -->
+              <div class="card">
+                <h3>My Live Funding Campaigns</h3>
+                <div class="flex flex-col gap-4 mt-4">
+                  @for (c of data.activeCampaigns; track c.id) {
+                    <div class="campaign-row p-4 glass-panel flex justify-between items-center">
+                      <div>
+                        <strong>{{ c.startupName }}</strong>
+                        <p class="text-sm text-muted">Raised {{ c.currentFunding | currency:'USD':'symbol':'1.0-0' }} of {{ c.fundingGoal | currency:'USD':'symbol':'1.0-0' }}</p>
+                      </div>
+                      <span class="badge badge-accent">{{ c.status }}</span>
+                    </div>
+                  } @empty {
+                    <div class="p-6 text-center text-muted">
+                      <p>You have no active crowdfunding campaigns on the grid.</p>
+                      <button class="btn btn-outline btn-sm mt-4" (click)="switchTab('launch')">Create Campaign</button>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Recent Investments -->
+              <div class="card">
+                <h3>Recent Backers</h3>
+                <div class="flex flex-col gap-4 mt-4">
+                  @for (i of data.recentInvestments; track i.id) {
+                    <div class="investment-row p-4 glass-panel flex justify-between items-center">
+                      <div>
+                        <strong>Seed Investor Allocation</strong>
+                        <p class="text-sm text-muted">Invested at: {{ i.investedAt | date }}</p>
+                      </div>
+                      <strong class="text-accent">{{ i.amount | currency:'USD':'symbol':'1.0-0' }}</strong>
+                    </div>
+                  } @empty {
+                    <div class="p-6 text-center text-muted">
+                      <p>No investment transactions processed yet.</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Notifications / Action Feed -->
+            <div class="card mt-4">
+              <h3>Action Feed & Notifications</h3>
+              <div class="flex flex-col gap-2 mt-4">
+                @for (n of data.notifications; track n.id) {
+                  <div class="notification-item p-4 glass-panel flex items-start gap-3">
+                    <span class="material-icons notify-bullet">info</span>
+                    <div>
+                      <p class="msg">{{ n.message }}</p>
+                      <span class="time text-xs text-muted">{{ n.createdAt | date:'short' }}</span>
+                    </div>
+                  </div>
+                } @empty {
+                  <p class="text-muted p-6 text-center">No alerts in your inbox.</p>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="text-center p-6 glass-panel">
+              <span class="material-icons rotate size-32">sync</span>
+              <p class="mt-4">Compiling founder profile statistics...</p>
+            </div>
+          }
+        }
+
+        @if (activeTab() === 'startup') {
+          <!-- Startup Profiles -->
+          <div class="card">
+            <h3>Registered Startups</h3>
+            <div class="flex flex-col gap-4 mt-4">
+              @for (st of myStartups(); track st.id) {
+                <div class="startup-row p-6 glass-panel flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div class="flex items-center gap-4">
+                    <img [src]="st.logoUrl || 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?auto=format&fit=crop&w=80&h=80&q=80'" [alt]="st.name" class="avatar-sm" />
+                    <div>
+                      <h4>{{ st.name }}</h4>
+                      <p class="text-sm text-muted">{{ st.tagline }}</p>
+                      <p class="text-xs text-muted mt-2">Health Score: <strong>{{ st.healthScore }}</strong> | Status: <strong>{{ st.status }}</strong></p>
+                    </div>
+                  </div>
+                  <a [routerLink]="['/startups', st.id]" class="btn btn-outline btn-sm">Public View</a>
+                </div>
+              } @empty {
+                <div class="p-6 text-center text-muted">
+                  <p>You have not registered a startup profile yet.</p>
+                  <button class="btn btn-primary mt-4" (click)="showCreateStartupForm.set(true)">Register Startup Profile</button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (activeTab() === 'ai-pitch') {
+          <!-- AI Pitch Helper -->
+          <div class="card">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="material-icons ai-headline-icon">psychology</span>
+              <h3>Llama 3 Pitch Deck Helper</h3>
+            </div>
+            <p class="text-muted mb-4">Draft your elevator pitch below. Our AI service will structure it using institutional VC frameworks to build investor trust.</p>
+
+            <div class="grid grid-2">
+              <div class="flex flex-col gap-2">
+                <label for="draft" class="label text-xs font-semibold">Your Draft Pitch</label>
+                <textarea id="draft" [(ngModel)]="draftPitch" rows="12" class="form-control font-sm" placeholder="Paste your pitch description..."></textarea>
+                <button class="btn btn-primary mt-2" [disabled]="improvingPitch() || !draftPitch" (click)="refinePitch()">
+                  @if (improvingPitch()) {
+                    <span class="material-icons rotate font-16">sync</span> Synthesizing...
+                  } @else {
+                    Refine Pitch Deck
+                  }
+                </button>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <span class="label text-xs font-semibold">AI Refined Framework Output</span>
+                <div class="ai-pitch-output p-4 glass-panel flex-1 text-pre">
+                  @if (refinedPitch()) {
+                    {{ refinedPitch() }}
+                  } @else {
+                    <div class="flex flex-col items-center justify-center h-full text-muted">
+                      <span class="material-icons font-48">bolt</span>
+                      <p class="mt-4">VC structured pitch will print here.</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (activeTab() === 'launch') {
+          <!-- Launch Campaign -->
+          <div class="card">
+            <h3>Raise Seed Capital</h3>
+            <p class="text-muted mb-4">Launch a new seed crowdfunding campaign. All campaigns are submitted as 'Draft' for Admin verification prior to going live.</p>
+
+            @if (launchSuccess()) {
+              <div class="success-message p-6 text-center">
+                <span class="material-icons success-icon">verified</span>
+                <p class="mt-4">Campaign round registered!</p>
+                <p class="text-muted">Your draft round is submitted. Platform admins will audit the terms and publish the campaign.</p>
+              </div>
+            } @else {
+              @if (selectedStartup(); as selected) {
+                <form (submit)="submitCampaign($event)" class="flex flex-col gap-4">
+                  @if (launchError()) {
+                    <div class="error-panel p-6 mb-4">
+                      <p>{{ launchError() }}</p>
+                    </div>
+                  }
+
+                  <div class="form-group">
+                    <label>Selected Organization</label>
+                    <div class="p-4 glass-panel font-semibold">{{ selected.name }}</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="goal">Fundraising Target Goal ($)</label>
+                    <input type="number" id="goal" name="goal" [(ngModel)]="fundingGoal" required min="1000" class="form-control" />
+                  </div>
+
+                  <div class="grid grid-2">
+                    <div class="form-group">
+                      <label for="starts">Campaign Start Date</label>
+                      <input type="date" id="starts" name="starts" [(ngModel)]="startsAt" required class="form-control" />
+                    </div>
+                    <div class="form-group">
+                      <label for="ends">Campaign Expiry Date</label>
+                      <input type="date" id="ends" name="ends" [(ngModel)]="endsAt" required class="form-control" />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="pitch">Elevator Pitch summary for listing card</label>
+                    <textarea id="pitch" name="pitch" [(ngModel)]="pitchContent" required rows="4" placeholder="Brief outline showing why investors should support this startup." class="form-control"></textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-accent btn-full mt-4">Submit Seed Campaign</button>
+                </form>
+              } @else {
+                <p class="text-muted">You must have an approved startup profile to register campaigns.</p>
+              }
+            }
+          </div>
+        }
+      </main>
+    </div>
+  }
+</div>

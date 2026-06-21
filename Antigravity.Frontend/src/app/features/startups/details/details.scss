@@ -1,0 +1,220 @@
+.page-spacing {
+  padding: 64px 0;
+}
+
+.startup-banner {
+  .startup-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    border: 1px solid var(--card-border);
+  }
+  
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+  }
+  
+  .tagline {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+  
+  .meta-info {
+    font-size: 0.9rem;
+  }
+}
+
+.details-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: start;
+  
+  @media(min-width: 1024px) {
+    grid-template-columns: 1fr 360px;
+  }
+}
+
+// Left side panel
+.ai-summary-panel {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border: 1px solid rgba(37, 99, 235, 0.15);
+  
+  .ai-icon {
+    font-size: 2rem;
+    color: var(--primary);
+  }
+  
+  .ai-text {
+    font-size: 1rem;
+    color: var(--text-dark);
+    font-style: italic;
+    line-height: 1.7;
+  }
+  
+  .ai-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-muted);
+    
+    .rotate {
+      font-size: 2.5rem;
+    }
+  }
+}
+
+.tabs-card {
+  padding: 0;
+}
+
+.tabs-nav {
+  border-bottom: 1px solid var(--card-border);
+  overflow-x: auto;
+  
+  .tab-btn {
+    background: none;
+    border: none;
+    padding: 16px 24px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+    
+    &:hover {
+      color: var(--primary);
+    }
+    
+    &.active {
+      color: var(--primary);
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--primary);
+      }
+    }
+  }
+}
+
+.tabs-content {
+  padding: 24px;
+}
+
+.text-pre {
+  white-space: pre-wrap;
+  font-family: var(--font-sans);
+  color: var(--text-dark);
+}
+
+.doc-link-card {
+  .doc-icon {
+    font-size: 2.2rem;
+    color: #EF4444;
+  }
+}
+
+.team-member-card {
+  .member-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  h4 {
+    font-size: 1.1rem;
+  }
+}
+
+// Right side panel
+.campaign-stats-card {
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 24px;
+  }
+  
+  .stat-box {
+    display: flex;
+    flex-direction: column;
+    
+    .label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    
+    .value {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-top: 4px;
+    }
+  }
+}
+
+.progress-section {
+  .pct {
+    font-weight: 700;
+    color: var(--primary);
+  }
+  
+  .days {
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+}
+
+.error-panel {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-sm);
+  color: #EF4444;
+  font-size: 0.9rem;
+}
+
+.help-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.not-investable {
+  background-color: rgba(0, 0, 0, 0.02);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  
+  .dark-theme & {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+}
+
+// Animations
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.rotate {
+  animation: spin 2s linear infinite;
+}
+
+.size-48 {
+  font-size: 48px;
+}
+.font-30 {
+  font-size: 30px;
+}

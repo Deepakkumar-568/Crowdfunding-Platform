@@ -1,0 +1,52 @@
+<div class="auth-wrapper flex items-center justify-center">
+  <div class="card auth-card glass-panel p-6">
+    <div class="text-center mb-4">
+      <span class="material-icons auth-icon">lock_outline</span>
+      <h2 class="font-display">Reset Password</h2>
+      <p class="text-muted">Enter security token code and your new password</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="error-panel p-6 mb-4">
+        <p>{{ errorMessage() }}</p>
+      </div>
+    }
+
+    @if (successMessage()) {
+      <div class="success-message p-6 text-center">
+        <span class="material-icons success-icon">check_circle</span>
+        <p class="mt-4">{{ successMessage() }}</p>
+        <p class="text-muted mt-2">Redirecting to Login Page...</p>
+      </div>
+    } @else {
+      <form (submit)="onSubmit($event)" class="flex flex-col gap-4">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" [(ngModel)]="email" required autocomplete="email" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="token">Security Token Code</label>
+          <input type="text" id="token" name="token" [(ngModel)]="token" required placeholder="e.g. RESET123" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" name="newPassword" [(ngModel)]="newPassword" required autocomplete="new-password" class="form-control" />
+        </div>
+
+        <button type="submit" [disabled]="loading()" class="btn btn-primary btn-full mt-4">
+          @if (loading()) {
+            <span class="material-icons rotate font-16">sync</span> Updating...
+          } @else {
+            Update Password
+          }
+        </button>
+      </form>
+    }
+
+    <div class="auth-footer text-center mt-4 pt-4 border-top">
+      <p class="text-muted">Back to <a routerLink="/auth/login">Sign In</a></p>
+    </div>
+  </div>
+</div>

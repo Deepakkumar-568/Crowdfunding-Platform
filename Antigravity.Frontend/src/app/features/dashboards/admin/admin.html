@@ -1,0 +1,129 @@
+<div class="container page-spacing">
+  <!-- Title Header -->
+  <div class="page-header mb-4">
+    <h1 class="font-display">Admin Dashboard</h1>
+    <p class="text-muted">Verify startup profiles, review campaign funding goals, and audit transactional volumes.</p>
+  </div>
+
+  <!-- Main Dashboard Workspace -->
+  <div class="dashboard-workspace mt-4">
+    <!-- Navigation Sidebar tabs -->
+    <aside class="dashboard-sidebar glass-panel p-6">
+      <nav class="sidebar-nav flex flex-col gap-2">
+        <button class="nav-tab-btn" [class.active]="activeTab() === 'metrics'" (click)="switchTab('metrics')">
+          <span class="material-icons">analytics</span> Platform Metrics
+        </button>
+        <button class="nav-tab-btn" [class.active]="activeTab() === 'startups'" (click)="switchTab('startups')">
+          <span class="material-icons">fact_check</span> Startup Verification Queue ({{ dashboardData()?.pendingStartups?.length || 0 }})
+        </button>
+        <button class="nav-tab-btn" [class.active]="activeTab() === 'campaigns'" (click)="switchTab('campaigns')">
+          <span class="material-icons">publish</span> Campaign Launch Board ({{ dashboardData()?.pendingCampaigns?.length || 0 }})
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Dashboard Modules Area -->
+    <main class="dashboard-main-content">
+      @if (activeTab() === 'metrics') {
+        <!-- Overview metrics -->
+        @if (dashboardData(); as data) {
+          <!-- Cards Grid -->
+          <div class="grid grid-4 mb-4">
+            @for (card of data.cards; track card.title) {
+              <div class="card metric-card">
+                <span class="metric-title">{{ card.title }}</span>
+                <span class="metric-value font-display mt-2">{{ card.value }}</span>
+                <span class="metric-change mt-2" [class.positive]="card.isPositive">{{ card.changeText }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Platform Logs -->
+          <div class="card">
+            <h3>Recent System Activity Logs</h3>
+            <div class="flex flex-col gap-2 mt-4">
+              @for (log of data.recentActivityLog; track log.id) {
+                <div class="notification-item p-4 glass-panel flex items-start gap-3">
+                  <span class="material-icons notify-bullet">receipt</span>
+                  <div>
+                    <p class="msg">{{ log.message }}</p>
+                    <span class="time text-xs text-muted">{{ log.createdAt | date:'medium' }}</span>
+                  </div>
+                </div>
+              } @empty {
+                <p class="text-muted p-6 text-center">No platform activity logged.</p>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="text-center p-6 glass-panel">
+            <span class="material-icons rotate size-32">sync</span>
+            <p class="mt-4">Compiling global admin metrics...</p>
+          </div>
+        }
+      }
+
+      @if (activeTab() === 'startups') {
+        <!-- Startups Verification -->
+        <div class="card">
+          <h3>Startup Verification Queue</h3>
+          <p class="text-muted mb-4">Audit registered profiles and enable them to raise seed capital.</p>
+
+          <div class="flex flex-col gap-4 mt-4">
+            @for (st of dashboardData()?.pendingStartups; track st.id) {
+              <div class="startup-row p-6 glass-panel flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="flex items-center gap-4">
+                  <img [src]="st.logoUrl || 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?auto=format&fit=crop&w=80&h=80&q=80'" [alt]="st.name" class="avatar-sm" />
+                  <div>
+                    <h4>{{ st.name }}</h4>
+                    <p class="text-sm text-muted">{{ st.tagline }}</p>
+                    <p class="text-xs text-muted mt-2">Health Index: <strong>{{ st.healthScore }}</strong> | Category: <strong>{{ st.category }}</strong> | Founder: <strong>{{ st.founderName }}</strong></p>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                  <button class="btn btn-accent btn-sm" (click)="verifyStartup(st.id, 'Approved')">Approve Profile</button>
+                  <button class="btn btn-outline btn-sm text-danger" (click)="verifyStartup(st.id, 'Rejected')">Reject</button>
+                </div>
+              </div>
+            } @empty {
+              <div class="p-6 text-center text-muted">
+                <span class="material-icons text-accent">check_circle</span>
+                <p class="mt-4">Verification queue is completely clear!</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (activeTab() === 'campaigns') {
+        <!-- Campaigns launch approval -->
+        <div class="card">
+          <h3>Campaign Launch Approvals</h3>
+          <p class="text-muted mb-4">Review seed rounds details. Approving a campaign publishes it live and open for investment.</p>
+
+          <div class="flex flex-col gap-4 mt-4">
+            @for (c of dashboardData()?.pendingCampaigns; track c.id) {
+              <div class="startup-row p-6 glass-panel flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                  <h4>{{ c.startupName }}</h4>
+                  <p class="text-sm text-muted">{{ c.startupTagline }}</p>
+                  <p class="text-xs text-muted mt-2">Funding Goal: <strong>{{ c.fundingGoal | currency:'USD':'symbol':'1.0-0' }}</strong></p>
+                  <p class="pitch-snippet mt-2 font-italic">"{{ c.pitch }}"</p>
+                </div>
+                <div class="flex gap-2">
+                  <button class="btn btn-accent btn-sm" (click)="approveCampaign(c.id, 'Active')">Publish Live</button>
+                  <button class="btn btn-outline btn-sm text-danger" (click)="approveCampaign(c.id, 'Cancelled')">Decline</button>
+                </div>
+              </div>
+            } @empty {
+              <div class="p-6 text-center text-muted">
+                <span class="material-icons text-accent">check_circle</span>
+                <p class="mt-4">All seed campaign approvals completed!</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </main>
+  </div>
+</div>

@@ -1,0 +1,157 @@
+.page-spacing {
+  padding: 64px 0;
+}
+
+.page-header {
+  margin-bottom: 48px;
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+  }
+}
+
+.dashboard-workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: start;
+  
+  @media(min-width: 1024px) {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+.dashboard-sidebar {
+  position: sticky;
+  top: 96px;
+}
+
+.sidebar-nav {
+  .nav-tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    padding: 12px 16px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    text-align: left;
+    transition: all 0.2s ease;
+    
+    .material-icons {
+      font-size: 1.25rem;
+    }
+    
+    &:hover {
+      color: var(--primary);
+      background-color: rgba(37, 99, 235, 0.03);
+    }
+    
+    &.active {
+      color: var(--primary);
+      background-color: rgba(37, 99, 235, 0.08);
+      .dark-theme & {
+        background-color: rgba(37, 99, 235, 0.15);
+      }
+    }
+  }
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  
+  .metric-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  
+  .metric-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  
+  .metric-change {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    &.positive {
+      color: var(--accent);
+    }
+  }
+}
+
+.campaign-row, .investment-row, .startup-row {
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.avatar-sm {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--card-border);
+}
+
+.ai-pitch-output {
+  min-height: 250px;
+  max-height: 400px;
+  overflow-y: auto;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  line-height: 1.7;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+}
+
+.ai-headline-icon {
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+.notification-item {
+  border-radius: var(--radius-sm);
+  
+  .notify-bullet {
+    color: var(--primary);
+    font-size: 1.25rem;
+    margin-top: 2px;
+  }
+  
+  .msg {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+  }
+}
+
+.hidden-radio {
+  display: none;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.rotate {
+  animation: spin 2s linear infinite;
+}
+
+.font-16 {
+  font-size: 16px;
+}
+.font-48 {
+  font-size: 48px;
+}
+.size-32 {
+  font-size: 32px;
+}

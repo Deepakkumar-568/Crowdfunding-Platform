@@ -1,0 +1,76 @@
+<div [class.dark-theme]="isDarkTheme()" class="app-container">
+  <!-- Header -->
+  <header class="glass-panel main-header">
+    <div class="container flex items-center justify-between">
+      <a routerLink="/" class="logo flex items-center gap-2">
+        <span class="material-icons logo-icon">blur_on</span>
+        <span class="logo-text font-display">Antigravity</span>
+      </a>
+
+      <nav class="nav-links flex items-center gap-4">
+        <a routerLink="/startups" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Startups</a>
+        
+        @if (authService.isLoggedIn()) {
+          @if (authService.userRole() === 'Founder') {
+            <a routerLink="/dashboard/founder" routerLinkActive="active">Founder Dashboard</a>
+          } @else if (authService.userRole() === 'Investor') {
+            <a routerLink="/dashboard/investor" routerLinkActive="active">Investor Dashboard</a>
+          } @else if (authService.userRole() === 'Admin') {
+            <a routerLink="/dashboard/admin" routerLinkActive="active">Admin Dashboard</a>
+          }
+          <div class="user-menu flex items-center gap-3">
+            <span class="username">{{ authService.currentUser()?.username }}</span>
+            <button class="btn btn-outline btn-sm" (click)="logout()">Logout</button>
+          </div>
+        } @else {
+          <a routerLink="/auth/login" class="btn btn-outline btn-sm">Login</a>
+          <a routerLink="/auth/register" class="btn btn-primary btn-sm">Sign Up</a>
+        }
+        
+        <button class="theme-toggle" (click)="toggleTheme()" aria-label="Toggle Theme">
+          <span class="material-icons">{{ isDarkTheme() ? 'light_mode' : 'dark_mode' }}</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container grid grid-4">
+      <div class="footer-about">
+        <h4 class="font-display">Antigravity</h4>
+        <p class="mt-4">Empowering Startups. Connecting Investors.</p>
+        <p class="tagline-sub">AI-Powered Crowdfunding Ecosystem</p>
+      </div>
+      <div>
+        <h5>Explore</h5>
+        <ul class="footer-links">
+          <li><a routerLink="/startups">All Campaigns</a></li>
+          <li><a href="#">Success Stories</a></li>
+          <li><a href="#">How it Works</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <ul class="footer-links">
+          <li><a href="#">Terms of Use</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Investor Agreement</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <p>support@antigravity.fund</p>
+        <p>+1 (555) 867-5309</p>
+      </div>
+    </div>
+    <div class="footer-bottom text-center">
+      <p>&copy; 2026 Antigravity. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
