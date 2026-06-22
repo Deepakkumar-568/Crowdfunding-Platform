@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="Antigravity.Application/Antigravity.Application.csproj" />
-  <Project Path="Antigravity.Domain/Antigravity.Domain.csproj" />
-  <Project Path="Antigravity.Infrastructure/Antigravity.Infrastructure.csproj" />
-  <Project Path="Antigravity.WebApi/Antigravity.WebApi.csproj" />
-</Solution>

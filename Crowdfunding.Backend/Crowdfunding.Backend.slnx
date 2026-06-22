@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Crowdfunding.Application/Crowdfunding.Application.csproj" />
+  <Project Path="Crowdfunding.Domain/Crowdfunding.Domain.csproj" />
+  <Project Path="Crowdfunding.Infrastructure/Crowdfunding.Infrastructure.csproj" />
+  <Project Path="Crowdfunding.WebApi/Crowdfunding.WebApi.csproj" />
+</Solution>

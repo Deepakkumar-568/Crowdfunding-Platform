@@ -30,7 +30,7 @@ This strategy utilizes serverless container hosting (AWS Fargate) to scale the A
 
 ### Step 2: Storage & CDN (Amazon S3 & CloudFront)
 1. Build the Angular app locally: `npm run build`.
-2. Upload the contents of `dist/Antigravity.Frontend/` to an **Amazon S3** bucket configured for static web hosting.
+2. Upload the contents of `dist/Crowdfunding.Frontend/` to an **Amazon S3** bucket configured for static web hosting.
 3. Configure an **Amazon CloudFront** distribution pointing to the S3 bucket to ensure low-latency HTTPS access with custom SSL certificates (AWS Certificate Manager).
 
 ### Step 3: Container Hosting (AWS ECS Fargate)
@@ -57,8 +57,8 @@ This strategy deploys containerized applications directly using Azure App Servic
 1. Create an **Azure Container Registry (ACR)** instance.
 2. Build and push backend and frontend images to ACR:
    ```bash
-   az acr build --registry crowdfundingregistry --image crowdfunding-backend:latest ./Antigravity.Backend
-   az acr build --registry crowdfundingregistry --image crowdfunding-frontend:latest ./Antigravity.Frontend
+   az acr build --registry crowdfundingregistry --image crowdfunding-backend:latest ./Crowdfunding.Backend
+   az acr build --registry crowdfundingregistry --image crowdfunding-frontend:latest ./Crowdfunding.Frontend
    ```
 3. Deploy two **Azure Web App for Containers** resources:
    - `crowdfunding-api`: Serves the backend image from ACR. Configure App Settings to bind Connection Strings and JWT Secrets.
@@ -102,7 +102,7 @@ jobs:
         ECR_REPOSITORY: crowdfunding-backend
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./Antigravity.Backend
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./Crowdfunding.Backend
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 ```

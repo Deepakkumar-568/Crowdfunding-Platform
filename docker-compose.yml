@@ -22,7 +22,7 @@ services:
 
   backend:
     build:
-      context: ./Antigravity.Backend
+      context: ./Crowdfunding.Backend
       dockerfile: Dockerfile
     container_name: crowdfunding-backend
     ports:
@@ -40,7 +40,7 @@ services:
 
   frontend:
     build:
-      context: ./Antigravity.Frontend
+      context: ./Crowdfunding.Frontend
       dockerfile: Dockerfile
     container_name: crowdfunding-frontend
     ports:
