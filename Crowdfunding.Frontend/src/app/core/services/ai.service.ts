@@ -6,6 +6,19 @@ export interface AITextResponse {
   result: string;
 }
 
+export interface AIPitchRefineResponse {
+  success: boolean;
+  generatedPitch: string;
+  score: number;
+  fundingStage: string;
+  estimatedValuation: string;
+  suggestedFunding: string;
+  strengths: string[];
+  weaknesses: string[];
+  risks: string[];
+  investorQuestions: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,8 +30,8 @@ export class AIService {
     return this.http.post<AITextResponse>(`${this.apiUrl}/enhance-description`, { name, tagline, description });
   }
 
-  improvePitch(name: string, pitch: string): Observable<AITextResponse> {
-    return this.http.post<AITextResponse>(`${this.apiUrl}/improve-pitch`, { name, pitch });
+  improvePitch(name: string, pitch: string): Observable<AIPitchRefineResponse> {
+    return this.http.post<AIPitchRefineResponse>(`${this.apiUrl}/improve-pitch`, { name, pitch });
   }
 
   generateSummary(name: string, description: string, businessModel: string, financials: string): Observable<AITextResponse> {

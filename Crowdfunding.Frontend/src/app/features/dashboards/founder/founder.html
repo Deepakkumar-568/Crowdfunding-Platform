@@ -224,41 +224,192 @@
         }
 
         @if (activeTab() === 'ai-pitch') {
-          <!-- AI Pitch Helper -->
-          <div class="card">
-            <div class="flex items-center gap-2 mb-4">
-              <span class="material-icons ai-headline-icon">psychology</span>
-              <h3>Llama 3 Pitch Deck Helper</h3>
-            </div>
-            <p class="text-muted mb-4">Draft your elevator pitch below. Our AI service will structure it using institutional VC frameworks to build investor trust.</p>
-
-            <div class="grid grid-2">
-              <div class="flex flex-col gap-2">
-                <label for="draft" class="label text-xs font-semibold">Your Draft Pitch</label>
-                <textarea id="draft" [(ngModel)]="draftPitch" rows="12" class="form-control font-sm" placeholder="Paste your pitch description..."></textarea>
-                <button class="btn btn-primary mt-2" [disabled]="improvingPitch() || !draftPitch" (click)="refinePitch()">
-                  @if (improvingPitch()) {
-                    <span class="material-icons rotate font-16">sync</span> Synthesizing...
-                  } @else {
-                    Refine Pitch Deck
-                  }
-                </button>
+          <!-- Premium AI Startup Pitch Refiner Workspace -->
+          <div class="ai-pitch-container">
+            <div class="card">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="material-icons ai-headline-icon">psychology</span>
+                <h3>AI Startup Pitch Refiner</h3>
               </div>
+              <p class="text-muted mb-4">Provide details about your startup idea. Our local Llama 3 model acts as a Silicon Valley VC mentor, refining your concepts, formulating advanced investor insights, and structuring a highly professional investor-ready pitch deck.</p>
 
-              <div class="flex flex-col gap-2">
-                <span class="label text-xs font-semibold">AI Refined Framework Output</span>
-                <div class="ai-pitch-output p-4 glass-panel flex-1 text-pre">
-                  @if (refinedPitch()) {
-                    {{ refinedPitch() }}
-                  } @else {
-                    <div class="flex flex-col items-center justify-center h-full text-muted">
-                      <span class="material-icons font-48">bolt</span>
-                      <p class="mt-4">VC structured pitch will print here.</p>
-                    </div>
-                  }
+              <!-- Textarea input with character counter -->
+              <div class="pitch-input-section">
+                <label for="draft" class="label text-xs font-semibold text-muted">Your Startup Idea or Pitch Draft</label>
+                <div class="textarea-wrapper">
+                  <textarea id="draft" [(ngModel)]="draftPitch" rows="8" class="form-control font-sm" placeholder="Describe your startup. What problem do you solve? How does your solution work? What is your business model? (The more information you provide, the better the refined pitch deck will be)"></textarea>
+                  <span class="char-counter">{{ draftPitch.length }} characters</span>
+                </div>
+                
+                <div class="action-row">
+                  <button class="btn btn-outline" [disabled]="improvingPitch() || (!draftPitch && !refinedPitchResponse())" (click)="clearRefinement()">
+                    <span class="material-icons font-16">clear_all</span> Clear
+                  </button>
+                  <button class="btn btn-primary" [disabled]="improvingPitch() || !draftPitch" (click)="refinePitch()">
+                    <span class="material-icons font-16">auto_awesome</span> Refine Pitch Deck
+                  </button>
                 </div>
               </div>
             </div>
+
+            <!-- Loading Spinner & Status Panel -->
+            @if (improvingPitch()) {
+              <div class="loading-panel card">
+                <div class="pulse-glow-ring">
+                  <span class="material-icons rotate">sync</span>
+                </div>
+                <h3>Generating your investor-ready pitch...</h3>
+                <p class="text-muted mt-2">Connecting to local Ollama Llama 3 model. Designing business frameworks and performing investment readiness calculations. This may take up to 2 minutes.</p>
+              </div>
+            }
+
+            <!-- Error Banner -->
+            @if (errorMessage()) {
+              <div class="error-panel p-6 flex items-start gap-4 mb-4 card">
+                <span class="material-icons text-danger">warning</span>
+                <div class="flex-1">
+                  <h4 class="text-danger font-semibold">Pitch Refinement Error</h4>
+                  <p class="text-sm mt-1 text-muted">{{ errorMessage() }}</p>
+                  <button class="btn btn-primary btn-sm mt-3" (click)="refinePitch()">Try Again</button>
+                </div>
+              </div>
+            }
+
+            <!-- Premium Dashboard Output -->
+            @if (refinedPitchResponse(); as response) {
+              <!-- Action & Control Bar -->
+              <div class="control-bar">
+                <div class="flex items-center gap-2">
+                  <span class="material-icons text-accent">verified_user</span>
+                  <span class="text-sm font-semibold text-muted">Refinement Complete</span>
+                </div>
+                <div class="control-actions">
+                  <button class="btn btn-outline btn-sm flex items-center gap-1" (click)="copyToClipboard()">
+                    <span class="material-icons font-16">content_copy</span>
+                    {{ copied() ? 'Copied!' : 'Copy Pitch' }}
+                  </button>
+                  <button class="btn btn-outline btn-sm flex items-center gap-1" (click)="downloadAsMarkdown()">
+                    <span class="material-icons font-16">download</span> Download MD
+                  </button>
+                  <button class="btn btn-primary btn-sm flex items-center gap-1" (click)="regeneratePitch()">
+                    <span class="material-icons font-16">replay</span> Regenerate
+                  </button>
+                </div>
+              </div>
+
+              <div class="premium-refiner-dashboard">
+                <!-- Left: Markdown Refined Pitch Deck -->
+                <div class="pitch-content-panel" [innerHTML]="refinedPitchHtml()"></div>
+
+                <!-- Right: Advanced AI Features & Metrics -->
+                <div class="pitch-sidebar">
+                  
+                  <!-- Readiness Score Circular Gauge -->
+                  <div class="score-card">
+                    <h4>Investment Readiness Score</h4>
+                    <div class="score-circle-container">
+                      <div class="score-circle" [style.--score]="response.score">
+                        <span class="score-value">{{ response.score }}</span>
+                        <span class="score-label">Score</span>
+                      </div>
+                    </div>
+                    <p class="text-xs text-muted mb-4">Calculated from startup assumptions, market scale, and completeness of business model.</p>
+                    
+                    <!-- Quick Metrics Grid -->
+                    <div class="metrics-row">
+                      <div class="metric-pill">
+                        <span class="val">{{ response.fundingStage }}</span>
+                        <span class="lbl">Stage</span>
+                      </div>
+                      <div class="metric-pill">
+                        <span class="val">{{ response.suggestedFunding }}</span>
+                        <span class="lbl">Funding</span>
+                      </div>
+                      <div class="metric-pill">
+                        <span class="val">{{ response.estimatedValuation }}</span>
+                        <span class="lbl">Valuation</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Insights List (Strengths, Weaknesses, Risks, Investor Questions) -->
+                  <div class="insights-card">
+                    <h4>Advanced Startup Insights</h4>
+                    
+                    <div class="flex flex-col gap-6 mt-4">
+                      <!-- Strengths -->
+                      @if (response.strengths.length) {
+                        <div class="insight-section">
+                          <div class="section-title strengths">
+                            <span class="material-icons">check_circle</span>
+                            <span>Startup Strengths</span>
+                          </div>
+                          <ul class="strengths">
+                            @for (item of response.strengths; track item) {
+                              <li>{{ item }}</li>
+                            }
+                          </ul>
+                        </div>
+                      }
+
+                      <!-- Weaknesses -->
+                      @if (response.weaknesses.length) {
+                        <div class="insight-section">
+                          <div class="section-title weaknesses">
+                            <span class="material-icons">info</span>
+                            <span>Areas of Improvement</span>
+                          </div>
+                          <ul class="weaknesses">
+                            @for (item of response.weaknesses; track item) {
+                              <li>{{ item }}</li>
+                            }
+                          </ul>
+                        </div>
+                      }
+
+                      <!-- Risks -->
+                      @if (response.risks.length) {
+                        <div class="insight-section">
+                          <div class="section-title risks">
+                            <span class="material-icons">report_problem</span>
+                            <span>Key Vulnerabilities</span>
+                          </div>
+                          <ul class="risks">
+                            @for (item of response.risks; track item) {
+                              <li>{{ item }}</li>
+                            }
+                          </ul>
+                        </div>
+                      }
+
+                      <!-- Investor Questions -->
+                      @if (response.investorQuestions.length) {
+                        <div class="insight-section">
+                          <div class="section-title questions">
+                            <span class="material-icons">help_outline</span>
+                            <span>Top 5 Investor Questions</span>
+                          </div>
+                          <ul class="questions">
+                            @for (item of response.investorQuestions; track item) {
+                              <li>{{ item }}</li>
+                            }
+                          </ul>
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            } @else {
+              <!-- Empty state when not generated and not loading -->
+              @if (!improvingPitch()) {
+                <div class="card p-6 text-center text-muted">
+                  <span class="material-icons font-48">rocket</span>
+                  <p class="mt-4">No refined pitch deck generated yet. Enter your startup details above and click 'Refine Pitch Deck' to generate your professional funding materials.</p>
+                </div>
+              }
+            }
           </div>
         }
 
